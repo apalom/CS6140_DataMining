@@ -1,0 +1,33 @@
+% Run Function
+while errorMax > fronAk2
+
+    el = el + 1;
+    [B] = FD_func1(A,el);
+    errorMax(el,1)  = norm(A'*A - B'*B, 2);
+
+end
+
+% Function Call
+function [B] = FD_func(A,el)
+  
+  % Prepare Matrices and Pre-Load B
+  [n,d] = size(A);
+  B = zeros(2*el,d);  
+  B(1:(2*el-1),:) = A(1:(2*el-1),:);
+  
+  for i = 1:n
+      B(2*el,:) = A(i,:);
+      [~,S,V] = svd(B);
+      S(abs(B)<1e-3) = 0;
+      
+      % Set New Values
+      delta = S(el,el).^2;
+      for k = 1:(el-1)
+        sigmaPrime = sqrt(max(0, (S(k,k).^2)-delta));
+        S(k,k) = sigmaPrime;
+      end
+      B = S*V';
+      B(abs(B)<1e-3) = 0;
+  end
+
+  end

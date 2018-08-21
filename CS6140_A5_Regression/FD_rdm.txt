@@ -1,0 +1,40 @@
+
+% Function Call for x Trial Runs
+for runs = 1:totalRuns
+    
+    % Reset initial values
+    errorMax = fronA + 1;
+    el = 0;
+    
+    % Run Function
+    while errorMax > fronA
+        el = el + 1;
+
+        [B,S] = FD_func_rdm(A,el);
+        errorMax = norm(A'*A - B'*B, 2);
+        recordErrorMax(el,runs) = errorMax;
+        %fronAtheor(el,runs) = (norm(A, 'fro')^2)/el; 
+
+        if el > 100
+            break
+        end
+    end
+    el
+end
+
+% Run Randomized FD Function
+function [B,S] = FD_func_rdm(A,el)
+    [n,d] = size(A);
+    S = zeros(el,n);
+  
+    for i = 1:el
+        for j = 1:n
+            S(i,j) = normrnd(0,1)/sqrt(el);
+        end
+    end
+  
+    B = S*A;
+
+  end
+end
+
